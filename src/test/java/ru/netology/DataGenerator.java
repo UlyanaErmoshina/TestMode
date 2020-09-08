@@ -23,20 +23,7 @@ public class DataGenerator {
             .build();
 
 
-
-    @BeforeAll
-    static void setUpAll() {
-        // сам запрос
-        given() // "дано"
-                .spec(requestSpec) // указываем, какую спецификацию используем
-                .body(new DataClient("vasya", "password", "active")) // передаём в теле объект, который будет преобразован в JSON
-                .when() // "когда"
-                .post("/api/system/users") // на какой путь, относительно BaseUri отправляем запрос
-                .then() // "тогда ожидаем"
-                .statusCode(200); // код 200 OK
-    }
-
-    public void generateUser(DataClient user) {
+    public static void registerUser(DataClient user) {
         // сам запрос
         given() // "дано"
                 .spec(requestSpec) // указываем, какую спецификацию используем
@@ -48,5 +35,38 @@ public class DataGenerator {
 
     }
 
+    public static String generatePassword() {
+        Faker faker = new Faker(new Locale("ru"));
+        return  faker.random().hex(8);
+    }
+    public static String generateLogin() {
+        Faker faker = new Faker(new Locale("ru"));
+        return  faker.name().firstName();
+    }
+
+    public static DataClient generateValidUser(){
+        DataClient client = new DataClient(generateLogin(),generatePassword(),"active");
+        registerUser(client);
+        return client;
+
+    }
+    public static DataClient getUserWithInvalidLogin(){
+        DataClient client = new DataClient(" ",generatePassword(),"active");
+        registerUser(client);
+        return client;
+
+    }
+    public static DataClient getUserWithInvalidPassword(){
+        DataClient client = new DataClient(generateLogin()," ","active");
+        registerUser(client);
+        return client;
+
+    }
+    public static DataClient getLockedUser(){
+        DataClient client = new DataClient(generateLogin(),generatePassword(),"blocked");
+        registerUser(client);
+        return client;
+
+    }
 
 }
