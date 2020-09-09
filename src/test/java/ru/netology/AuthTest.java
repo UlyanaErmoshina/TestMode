@@ -14,50 +14,48 @@ class AuthTest {
 
     DataGenerator data = new DataGenerator();
 
-    DataClient invalidPasswordClient = getUserWithInvalidPassword();
-    DataClient invalidLoginClient = getUserWithInvalidLogin();
-    //DataClient validUser = generateValidUser();
-    DataClient lockedUser = getLockedUser();
-
     @Test
     void shouldLoginValidUser() {
         DataClient validUser = generateValidUser();
         open("http://localhost:7777");
         SelenideElement form = $(".form");
         form.$("[data-test-id=login] input").setValue(validUser.getLogin());
-        form.$("[data-test-id=password] input").setValue(data.generateValidUser().getPassword());
+        form.$("[data-test-id=password] input").setValue(validUser.getPassword());
         form.$(".button").click();
-        $(".App_appContainer").shouldHave(text("Личный кабинет"));
+        $("App_appContainer__3jRx1").shouldHave(text("Личный кабинет"));
 
     }
 
     @Test
     void shouldLoginUserWithInvalidLogin() {
+        DataClient invalidLoginClient = getUserWithInvalidLogin();
         open("http://localhost:7777");
         SelenideElement form = $(".form");
-        form.$("[data-test-id=login] input").setValue(data.getUserWithInvalidLogin().getLogin());
-        form.$("[data-test-id=password] input").setValue(data.getUserWithInvalidLogin().getPassword());
+        form.$("[data-test-id=login] input").setValue(invalidLoginClient.getLogin());
+        form.$("[data-test-id=password] input").setValue(invalidLoginClient.getPassword());
         form.$(".button").click();
-        $("[data-test-id=success-notification]").shouldHave(text("Ошибка! Неверно указан логин или пароль"));
+        $("[data-test-id=error-notification]").shouldHave(text("Ошибка! Неверно указан логин или пароль"));
 
     }
 
     @Test
     void shouldLoginUserWithInvalidPassword() {
+        DataClient invalidPasswordClient = getUserWithInvalidPassword();
         open("http://localhost:7777");
         SelenideElement form = $(".form");
-        form.$("[data-test-id=login] input").setValue(data.getUserWithInvalidPassword().getLogin());
-        form.$("[data-test-id=password] input").setValue(data.getUserWithInvalidPassword().getPassword());
+        form.$("[data-test-id=login] input").setValue(invalidPasswordClient.getLogin());
+        form.$("[data-test-id=password] input").setValue(invalidPasswordClient.getPassword());
         form.$(".button").click();
-        $("[data-test-id=success-notification]").shouldHave(text("Ошибка! Неверно указан логин или пароль"));
+        $("[data-test-id=error-notification]").shouldHave(text("Ошибка! Неверно указан логин или пароль"));
     }
 
     @Test
     void shouldLoginLockedUser() {
+        DataClient lockedUser = getLockedUser();
         open("http://localhost:7777");
         SelenideElement form = $(".form");
-        form.$("[data-test-id=login] input").setValue(data.getLockedUser().getLogin());
-        form.$("[data-test-id=password] input").setValue(data.getLockedUser().getPassword());
+        form.$("[data-test-id=login] input").setValue(lockedUser.getLogin());
+        form.$("[data-test-id=password] input").setValue(lockedUser.getPassword());
         form.$(".button").click();
     }
 }
