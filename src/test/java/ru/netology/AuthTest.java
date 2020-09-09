@@ -12,8 +12,6 @@ import static ru.netology.DataGenerator.*;
 
 class AuthTest {
 
-    DataGenerator data = new DataGenerator();
-
     @Test
     void shouldLoginValidUser() {
         DataClient validUser = generateValidUser();
@@ -57,6 +55,7 @@ class AuthTest {
         form.$("[data-test-id=login] input").setValue(lockedUser.getLogin());
         form.$("[data-test-id=password] input").setValue(lockedUser.getPassword());
         form.$(".button").click();
+        $("[data-test-id=error-notification]").shouldHave(text("Ошибка! Пользователь заблокирован"));
     }
 }
 
