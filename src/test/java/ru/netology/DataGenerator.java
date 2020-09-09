@@ -14,6 +14,8 @@ import static io.restassured.RestAssured.given;
 
 public class DataGenerator {
 
+    private static Faker faker = new Faker(new Locale("en"));
+
     private static RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri("http://localhost")
             .setPort(7777)
@@ -36,11 +38,9 @@ public class DataGenerator {
     }
 
     public static String generatePassword() {
-        Faker faker = new Faker(new Locale("ru"));
         return  faker.random().hex(8);
     }
     public static String generateLogin() {
-        Faker faker = new Faker(new Locale("ru"));
         return  faker.name().firstName();
     }
 
@@ -51,15 +51,15 @@ public class DataGenerator {
 
     }
     public static DataClient getUserWithInvalidLogin(){
-        DataClient client = new DataClient(" ",generatePassword(),"active");
-        registerUser(client);
-        return client;
+        String password = generatePassword();
+        registerUser(new DataClient("valid"+generateLogin(),password,"active"));
+        return new DataClient("invalid"+generateLogin(),password,"active");
 
     }
     public static DataClient getUserWithInvalidPassword(){
-        DataClient client = new DataClient(generateLogin()," ","active");
-        registerUser(client);
-        return client;
+        String login = generateLogin();
+        registerUser(new DataClient(login,"valid"+generatePassword(),"active"));
+        return new DataClient(login,"invalid"+generatePassword(),"active");
 
     }
     public static DataClient getLockedUser(){
