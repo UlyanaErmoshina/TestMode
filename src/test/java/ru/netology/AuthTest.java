@@ -16,14 +16,15 @@ class AuthTest {
 
     DataClient invalidPasswordClient = getUserWithInvalidPassword();
     DataClient invalidLoginClient = getUserWithInvalidLogin();
-    DataClient validUser = generateValidUser();
+    //DataClient validUser = generateValidUser();
     DataClient lockedUser = getLockedUser();
 
     @Test
     void shouldLoginValidUser() {
+        DataClient validUser = generateValidUser();
         open("http://localhost:7777");
         SelenideElement form = $(".form");
-        form.$("[data-test-id=login] input").setValue(data.generateValidUser().getLogin());
+        form.$("[data-test-id=login] input").setValue(validUser.getLogin());
         form.$("[data-test-id=password] input").setValue(data.generateValidUser().getPassword());
         form.$(".button").click();
         $(".App_appContainer").shouldHave(text("Личный кабинет"));
